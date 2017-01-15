@@ -1,0 +1,2 @@
+# wallmadeProject
+Artificial intelligence project
