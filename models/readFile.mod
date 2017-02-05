@@ -9,13 +9,51 @@
 	// readLineByline return a String 	
 	function readWriteFile(pathSource,pathDest){
 		var fileIn = new IloOplInputFile();
-		var fileOut = new IloOplOutputFile(pathDest,true);
+		var fileOut = new IloOplOutputFile(pathDest,false);// here it's false cause we don't need to overwrite the file
 		fileIn.open(pathSource);
-		fileOut.writeln(readLineByLine(file));
+		fileOut.writeln(readLineByLine(fileIn)); // we call our fonction which generate a big string.
 		fileIn.close();
 		fileOut.close();
 		writeln("Reading from file done");
 	}
+     
+    // function generating meeting model for further information check in the info.txt 
+     function generateReunion(tab){
+         if(tab.length > 0){
+            var compositionReunion = "Reunion = { \n";
+            for(var i = 0; i<tab.length;i++){
+                var tabS = tab[i].split(" ");
+                compositionReunion = compositionReunion + "<"+tabS[1]+","+tabS[2];
+                var s =",[";
+                writeln(tabS.length);
+                for(var j = 3; j<tabS.length;j++ ){
+                    if(j == tabS.length-1)
+                        s=s+tabS[j];
+                    else 
+                        s=s+tabS[j]+",";
+                }
+                s=s+"]";
+                compositionReunion = compositionReunion + s + ">,\n";
+            }
+             return compositionReunion + "}";
+        }
+        else
+            return "";
+        
+    }
+     // function generating unvailable assosiate, model further information in the info.txt 
+    function generateIndispo(tab){
+        if(tab.length > 0 ){
+            var compositionIndispo  = "Indispo = { /n"
+        }
+        
+        
+    }
+    
+     // function generating scheduling model further information in the info.txt 
+    function generatePrecede(tab){
+        
+    }
 
 	function readLineByLine(file){
 		// creating a table to stock all the line readed in the input file	
@@ -30,36 +68,59 @@
 		// now we have all the line of our input file 
 		// lets compose our string
 		var tableJours = new Array();
-		var joursTest = new RegExp("jours");
 		//plages
 		var tablePlages = new Array();
-		var plagesTest = new RegExp("plages");
 		//reunion	
 		var tableReunion = new Array();
-		var reunionTest = new RegExp("reunion");
 		//indispo	
 		var tableIndispo = new Array();
-		var indispoTest = new RegExp("indispo");
 		//precede
 		var tablePrecede = new Array();
-		var joursTest = new RegExp("precede");
 
 		for (var i=0;i<table.length ;i++){
-			if (joursTest.test(table[i]))
-				tableJours[tableJours.length()]=table[i];
-			else if (plagesTest.test(table[i]))
-				tablePlages[tablePlages.length()]=table[i];
-			else if (reunionTest.test(table[i]))
-				tableReunion[tableReunion.length()]=table[i];
-			else if (indispoTest.test(table[i]))
-				tableIndispo[tableIndispo.length()]=table[i];
-			else if (joursTest.test(table[i]))
-				tablePrecede[tablePrecede.length()]=table[i];
+			if (table[i].indexOf("jours") >= 0 )
+				tableJours[tableJours.length]=table[i];		
+			else if (table[i].indexOf("plages") >= 0)
+				tablePlages[tablePlages.length]=table[i];
+			else if (table[i].indexOf("reunion") >= 0)
+                tableReunion[tableReunion.length]=table[i];
+			else if (table[i].indexOf("indispo") >= 0)
+				tableIndispo[tableIndispo.length]=table[i];
+			else if (table[i].indexOf("precede") >= 0)
+				tablePrecede[tablePrecede.length]=table[i];
 			else 
 				writeln("Error on line", i);		
 		}
 			
-		var returnedString="";
-							
+	var returnedString="";
+
+        if(tableJours.length > 1){
+            writeln("Problem we must have only one line named jours !!!");
+        }
+        else {
+            var a = tableJours[0];
+		a = a.split(" ");
+		a = a[1];
+		writeln(a);
+            returnedString=returnedString+"jours = "+a+";\n";
+		writeln(returnedString);      
+	  }
+            
+		if(tablePlages.length > 1){
+            writeln("Problem we must have only one line named plages !!!");
+        }
+        else {
+            var a = tablePlages[0].split(" ");
+            a = a[1];
+            writeln(a);
+            returnedString=returnedString+"plages = "+a+";\n";
+        }	
+        
+        returnedString = returnedString + generateReunion(tableReunion);
+        //returnedString = returnedString + generateIndispo(tableIndispo);
+        //returnedString = returnedString + generateReunion(tablePrecede);
+
+	return returnedString;
 	}
+readWriteFile(pathSource,pathDest);
 }
