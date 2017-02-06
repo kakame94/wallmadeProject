@@ -33,9 +33,10 @@
                         s=s+tabS[j]+",";
                 }
                 s=s+"]";
-                compositionReunion = compositionReunion + s + ">,\n";
+                compositionReunion = compositionReunion + s + ">\n,";
             }
-             return compositionReunion + "}";
+		compositionReunion = compositionReunion.substring(0,compositionReunion.length-1);
+             return compositionReunion + "};\n";
         }
         else
             return "";
@@ -44,15 +45,32 @@
      // function generating unvailable assosiate, model further information in the info.txt 
     function generateIndispo(tab){
         if(tab.length > 0 ){
-            var compositionIndispo  = "Indispo = { /n"
+            var compositionIndispo  = "indispo = { \n";
+             for(var i = 0; i<tab.length;i++){
+                var tabS = tab[i].split(" ");
+                compositionIndispo = compositionIndispo + "<"+tabS[1]+","+tabS[2];
+                compositionIndispo = compositionIndispo + ","+tabS[3]+".."+tabS[4]+">\n,";
         }
-        
-        
+	compositionIndispo = compositionIndispo.substring(0,compositionIndispo.length-1);
+	compositionIndispo = compositionIndispo + "};\n";
+            return compositionIndispo;
+        }
+        else return "";
     }
     
      // function generating scheduling model further information in the info.txt 
     function generatePrecede(tab){
-        
+        if(tab.length > 0 ){
+            var compositionIndispo  = "precede = { \n";
+             for(var i = 0; i<tab.length;i++){
+                var tabS = tab[i].split(" ");
+                compositionIndispo = compositionIndispo + "<"+tabS[1]+","+tabS[2]+">\n,";
+        }
+	    compositionIndispo = compositionIndispo.substring(0,compositionIndispo.length-1);        
+	    compositionIndispo = compositionIndispo + "};\n";
+            return compositionIndispo;
+        }
+        else return "";
     }
 
 	function readLineByLine(file){
@@ -117,8 +135,8 @@
         }	
         
         returnedString = returnedString + generateReunion(tableReunion);
-        //returnedString = returnedString + generateIndispo(tableIndispo);
-        //returnedString = returnedString + generateReunion(tablePrecede);
+        returnedString = returnedString + generateIndispo(tableIndispo);
+        returnedString = returnedString + generatePrecede(tablePrecede);
 
 	return returnedString;
 	}
